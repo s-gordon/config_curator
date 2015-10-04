@@ -20,7 +20,8 @@ module ConfigCurator
     TOOLS = {
       dpkg: 'dpkg',
       pacman: 'pacman',
-      pkgng: 'pkg'
+      pkgng: 'pkg',
+      homebrew: 'brew'
     }
 
     attr_accessor :tool, :tools
@@ -82,6 +83,13 @@ module ConfigCurator
 
     def pkgng(package)
       cmd = command? 'pkg'
+      Open3.popen3 cmd, 'info', package do |_, _, _, wait_thr|
+        wait_thr.value.to_i == 0
+      end
+    end
+
+    def homebrew(package)
+      cmd = command? 'brew'
       Open3.popen3 cmd, 'info', package do |_, _, _, wait_thr|
         wait_thr.value.to_i == 0
       end
